@@ -35,6 +35,7 @@ const App = () => {
   const [all, setAll] = useState(0);
   const [average, setAverage] = useState(0);
   const [positive, setPositive] = useState(0);
+  const [showStatistics, setShowStatistics] = useState(false);
 
   const handleClick = (feedBack) => {
     let updatedGood = good > 0 ? good : 0;
@@ -62,6 +63,9 @@ const App = () => {
 
     let updatedPositivePersentage = (updatedGood * 100) / updatedAll;
     setPositive(updatedPositivePersentage);
+
+    // Show Statistics when a button clicked
+    setShowStatistics(true);
   };
 
   return (
@@ -72,7 +76,9 @@ const App = () => {
         <Button handleClick={() => handleClick("neutral")} text="neutral" />
         <Button handleClick={() => handleClick("bad")} text="bad" />
       </div>
-      <Statistics statistics={[good, neutral, bad, all, average, positive]} />
+      {showStatistics && (
+        <Statistics statistics={[good, neutral, bad, all, average, positive]} />
+      )}
     </div>
   );
 };
