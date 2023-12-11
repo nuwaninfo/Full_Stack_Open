@@ -8,22 +8,24 @@ const Statistics = (props) => {
   const [good, neutral, bad, all, average, positive] = props.statistics;
 
   return (
-    <>
-      <h1>statistics</h1>
-      <p>
-        good {good}
-        <br />
-        neutral {neutral}
-        <br />
-        bad {bad}
-        <br />
-        all {all}
-        <br />
-        average {average}
-        <br />
-        positive {positive}
-      </p>
-    </>
+    <div>
+      <StatisticLine text="good" value={good} />
+      <StatisticLine text="neutral" value={neutral} />
+      <StatisticLine text="bad" value={bad} />
+      <StatisticLine text="all" value={all} />
+      <StatisticLine text="average" value={average} />
+      <StatisticLine text="positive" value={positive} />
+    </div>
+  );
+};
+
+const StatisticLine = (props) => {
+  const { text, value } = props;
+
+  return (
+    <p>
+      {text} {value}
+    </p>
   );
 };
 
@@ -76,6 +78,7 @@ const App = () => {
         <Button handleClick={() => handleClick("neutral")} text="neutral" />
         <Button handleClick={() => handleClick("bad")} text="bad" />
       </div>
+      <h1>statistics</h1>
       {showStatistics && (
         <Statistics statistics={[good, neutral, bad, all, average, positive]} />
       )}
