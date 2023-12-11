@@ -9,12 +9,7 @@ const Statistics = (props) => {
 
   return (
     <div>
-      <StatisticLine text="good" value={good} />
-      <StatisticLine text="neutral" value={neutral} />
-      <StatisticLine text="bad" value={bad} />
-      <StatisticLine text="all" value={all} />
-      <StatisticLine text="average" value={average} />
-      <StatisticLine text="positive" value={positive} />
+      <StatisticTable value={props.statistics} />
     </div>
   );
 };
@@ -26,6 +21,35 @@ const StatisticLine = (props) => {
     <p>
       {text} {value}
     </p>
+  );
+};
+
+const StatisticTable = (props) => {
+  const [good, neutral, bad, all, average, positive] = props.value;
+
+  return (
+    <table>
+      <thead></thead>
+      <tbody>
+        <StatisticTableRaw text="good" value={good} />
+        <StatisticTableRaw text="neutral" value={neutral} />
+        <StatisticTableRaw text="bad" value={bad} />
+        <StatisticTableRaw text="all" value={all} />
+        <StatisticTableRaw text="average" value={average} />
+        <StatisticTableRaw text="positive" value={positive} />
+      </tbody>
+    </table>
+  );
+};
+
+const StatisticTableRaw = (props) => {
+  const { text, value } = props;
+
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
   );
 };
 
