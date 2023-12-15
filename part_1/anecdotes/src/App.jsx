@@ -32,6 +32,7 @@ const App = () => {
   const maxVotesIndex = points.indexOf(maxVotes);
 
   //const mostVotedAnecdote = () => {};
+  console.log();
 
   return (
     <div>
