@@ -6,37 +6,25 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    /*let newPersons = [];
-    
+    let newPersons = [];
 
-    const form = event.target;
-    const formData = new FormData(form);
-
-    // Get name as object from namr input field
-    const objFRomInput = Object.fromEntries(formData.entries());
+    const newNameObj = { name: newName };
 
     // Check the name being added is already in the array
     const isEqual = persons.some(
-      (item) => JSON.stringify(item) === JSON.stringify(objFRomInput)
+      (item) => JSON.stringify(item) === JSON.stringify(newNameObj)
     );
     if (isEqual === false) {
-      console.log("hhhhh");
-      newPersons = [...persons, objFRomInput];
+      newPersons = [...persons, newNameObj];
+      setPersons(newPersons);
     } else {
-      alert(`${newName}`);
+      alert(`${newName} is already added to phonebook`);
     }
-
-    setPersons(newPersons);*/
-
-    const newPersons = [...persons, { name: newName }];
-    setPersons(newPersons);
-    console.log(persons);
   };
 
   // Get the value of input field
   const handleName = (event) => {
     setNewName(event.target.value);
-    console.log(event.target.value);
   };
 
   return (
@@ -52,7 +40,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       {persons.map((person) => {
-        return <div>{person.name}</div>;
+        return <div key={person.name}>{person.name}</div>;
       })}
     </div>
   );
