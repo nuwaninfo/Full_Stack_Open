@@ -3,25 +3,26 @@ import Filter from "./Filter";
 import PersonForm from "./PersonForm ";
 import Numbers from "./Numbers";
 import axios from "axios";
+import phoneBookService from "./services/phonebook_service";
 
 let nextId = 0;
 
 const App = () => {
   let filteredPerson = [];
   const [persons, setPersons] = useState([]);
-
-  useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setSearchResults(response.data);
-      setPersons(response.data);
-      nextId = response.data.length;
-    });
-  }, []);
-
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterName, setFilterName] = useState([]);
   const [serchResults, setSearchResults] = useState(persons);
+
+  useEffect(() => {
+    phoneBookService.getAll().then((intialPersons) => {
+      setSearchResults(intialPersons);
+      setPersons(intialPersons);
+      const lastPerson = intialPersons.pop();
+      nextId = lastPerson.id + 1;
+    });
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -29,15 +30,19 @@ const App = () => {
 
     const newObj = { name: newName, number: newNumber, id: nextId + 1 };
 
-    // Check the name being added is already in the array
-    const isEqual = persons.some(
-      (item) => JSON.stringify(item) === JSON.stringify(newObj)
+    const matchingObjects = persons.filter(
+      (obj) => obj["name"].toLowerCase() === newName.toLowerCase()
     );
-    if (isEqual === false) {
+    const exists = matchingObjects.length > 0;
+
+    if (exists === false) {
       newPersons = [...persons, newObj];
 
-      setSearchResults(newPersons);
-      setPersons(newPersons);
+      phoneBookService.create(newObj).then((returnedPerson) => {
+        newPersons = persons.concat(returnedPerson);
+        setSearchResults(newPersons);
+        setPersons(newPersons);
+      });
     } else {
       alert(`${newName} is already added to phonebook`);
     }
