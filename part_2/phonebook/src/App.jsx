@@ -19,11 +19,13 @@ const App = () => {
     phoneBookService.getAll().then((intialPersons) => {
       setSearchResults(intialPersons);
       setPersons(intialPersons);
-      const lastPerson = intialPersons.pop();
+
+      const lastPerson = intialPersons[intialPersons.length - 1];
       nextId = lastPerson.id + 1;
     });
   }, []);
 
+  // Handle Add button
   const handleSubmit = (event) => {
     event.preventDefault();
     let newPersons = [];
@@ -44,7 +46,24 @@ const App = () => {
         setPersons(newPersons);
       });
     } else {
-      alert(`${newName} is already added to phonebook`);
+      const result = window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      );
+      if (result === true) {
+        phoneBookService
+          .updatePhoneBook(matchingObjects[0].id, newObj)
+          .then((updatedPerson) => {
+            // update the new number in the screen
+            const updatedData = persons.map((item) => {
+              if (item.id === matchingObjects[0].id) {
+                return { ...item, number: updatedPerson.number };
+              }
+              return item;
+            });
+            setSearchResults(updatedData);
+            setPersons(updatedData);
+          });
+      }
     }
 
     // Clear text fields
@@ -76,11 +95,10 @@ const App = () => {
     setSearchResults(filteredPerson);
   };
 
-  // Handle Delete function
+  // Handle Delete functionality
   const handleDelete = (id, name) => {
     if (window.confirm(`Delete ${name}?`)) {
       phoneBookService.deletePerson(id).then((deletedPerson) => {
-        console.log(deletedPerson);
         const personsAfterDelete = persons.filter((person) => person.id !== id);
         setPersons(personsAfterDelete);
         setSearchResults(personsAfterDelete);
