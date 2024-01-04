@@ -1,8 +1,8 @@
-const Notification = ({ message }) => {
-  if (message === null) {
+const Notification = ({ messageObj }) => {
+  if (messageObj.message === null) {
     return null;
   }
-  return <div className="error">{message}</div>;
+  return <div className={messageObj.type}>{messageObj.message}</div>;
 };
 
 export default Notification;

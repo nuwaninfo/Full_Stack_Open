@@ -14,7 +14,10 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filterName, setFilterName] = useState([]);
   const [serchResults, setSearchResults] = useState(persons);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState({
+    message: null,
+    type: null,
+  });
 
   useEffect(() => {
     phoneBookService.getAll().then((intialPersons) => {
@@ -45,9 +48,15 @@ const App = () => {
         newPersons = persons.concat(returnedPerson);
         setSearchResults(newPersons);
         setPersons(newPersons);
-        setErrorMessage(`Added ${returnedPerson.name}`);
+        setErrorMessage({
+          message: `Added ${returnedPerson.name}`,
+          type: "success",
+        });
         setTimeout(() => {
-          setErrorMessage(null);
+          setErrorMessage({
+            message: null,
+            type: null,
+          });
         }, 5000);
       });
     } else {
@@ -67,9 +76,12 @@ const App = () => {
             });
             setSearchResults(updatedData);
             setPersons(updatedData);
-            setErrorMessage(`Number has been changed`);
+            setErrorMessage({
+              message: `Number has been changed`,
+              type: "success",
+            });
             setTimeout(() => {
-              setErrorMessage(null);
+              setErrorMessage({ message: null, type: null });
             }, 5000);
           });
       }
@@ -106,19 +118,32 @@ const App = () => {
 
   // Handle Delete functionality
   const handleDelete = (id, name) => {
+    const personsAfterDelete = persons.filter((person) => person.id !== id);
     if (window.confirm(`Delete ${name}?`)) {
-      phoneBookService.deletePerson(id).then((deletedPerson) => {
-        const personsAfterDelete = persons.filter((person) => person.id !== id);
-        setPersons(personsAfterDelete);
-        setSearchResults(personsAfterDelete);
-      });
+      phoneBookService
+        .deletePerson(id)
+        .then((deletedPerson) => {
+          setPersons(personsAfterDelete);
+          setSearchResults(personsAfterDelete);
+        })
+        .catch((error) => {
+          setErrorMessage({
+            message: `Information of ${name} has already been removed from server`,
+            type: "error",
+          });
+          setTimeout(() => {
+            setErrorMessage({ message: null, type: name });
+          }, 5000);
+          setPersons(personsAfterDelete);
+          setSearchResults(personsAfterDelete);
+        });
     }
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification messageObj={errorMessage} />
       <Filter filterName={filterName} handleFilter={handleFilter} />
       <h3>Add a new</h3>
       <PersonForm
