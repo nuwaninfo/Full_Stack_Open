@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import Filter from "./Filter";
 import PersonForm from "./PersonForm ";
 import Numbers from "./Numbers";
-import axios from "axios";
-import phoneBookService from "./services/phonebook_service";
+import Notification from "./Notification";
+import phoneBookService from "../services/phonebook_service";
 
 let nextId = 0;
 
@@ -14,6 +14,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filterName, setFilterName] = useState([]);
   const [serchResults, setSearchResults] = useState(persons);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     phoneBookService.getAll().then((intialPersons) => {
@@ -44,6 +45,10 @@ const App = () => {
         newPersons = persons.concat(returnedPerson);
         setSearchResults(newPersons);
         setPersons(newPersons);
+        setErrorMessage(`Added ${returnedPerson.name}`);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
       });
     } else {
       const result = window.confirm(
@@ -62,6 +67,10 @@ const App = () => {
             });
             setSearchResults(updatedData);
             setPersons(updatedData);
+            setErrorMessage(`Number has been changed`);
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 5000);
           });
       }
     }
@@ -109,6 +118,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter filterName={filterName} handleFilter={handleFilter} />
       <h3>Add a new</h3>
       <PersonForm
