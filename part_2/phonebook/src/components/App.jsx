@@ -5,7 +5,7 @@ import Numbers from "./Numbers";
 import Notification from "./Notification";
 import phoneBookService from "../services/phonebook_service";
 
-let nextId = 0;
+//let nextId = 0;
 
 const App = () => {
   let filteredPerson = [];
@@ -25,7 +25,7 @@ const App = () => {
       setPersons(intialPersons);
 
       const lastPerson = intialPersons[intialPersons.length - 1];
-      nextId = lastPerson.id + 1;
+      //nextId = lastPerson.id + 1;
     });
   }, []);
 
@@ -34,7 +34,7 @@ const App = () => {
     event.preventDefault();
     let newPersons = [];
 
-    const newObj = { name: newName, number: newNumber, id: nextId + 1 };
+    const newObj = { name: newName, number: newNumber };
 
     const matchingObjects = persons.filter(
       (obj) => obj["name"].toLowerCase() === newName.toLowerCase()
@@ -44,21 +44,29 @@ const App = () => {
     if (exists === false) {
       newPersons = [...persons, newObj];
 
-      phoneBookService.create(newObj).then((returnedPerson) => {
-        newPersons = persons.concat(returnedPerson);
-        setSearchResults(newPersons);
-        setPersons(newPersons);
-        setErrorMessage({
-          message: `Added ${returnedPerson.name}`,
-          type: "success",
-        });
-        setTimeout(() => {
+      phoneBookService
+        .create(newObj)
+        .then((returnedPerson) => {
+          newPersons = persons.concat(returnedPerson);
+          setSearchResults(newPersons);
+          setPersons(newPersons);
           setErrorMessage({
-            message: null,
-            type: null,
+            message: `Added ${returnedPerson.name}`,
+            type: "success",
           });
-        }, 5000);
-      });
+          setTimeout(() => {
+            setErrorMessage({
+              message: null,
+              type: null,
+            });
+          }, 5000);
+        })
+        .catch((error) => {
+          setErrorMessage({
+            message: error.response.data.error,
+            type: "error",
+          });
+        });
     } else {
       const result = window.confirm(
         `${newName} is already added to phonebook, replace the old number with a new one?`
@@ -84,14 +92,13 @@ const App = () => {
               setErrorMessage({ message: null, type: null });
             }, 5000);
           });
+        // Clear text fields
+        setNewName("");
+        setNewNumber("");
       }
     }
 
-    // Clear text fields
-    setNewName("");
-    setNewNumber("");
-
-    nextId = nextId + 1;
+    //nextId = nextId + 1;
   };
 
   // Get the value of name
