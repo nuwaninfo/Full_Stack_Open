@@ -20,6 +20,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -82,6 +83,12 @@ const App = () => {
         message: `a new blog ${response.title} added`,
         type: 'success',
       })
+      setTimeout(() => {
+        setErrorMessage({
+          message: null,
+          type: null,
+        })
+      }, 5000)
       setTitle('')
       setAuthor('')
       setUrl('')
@@ -98,6 +105,8 @@ const App = () => {
     setAuthor,
     setUrl,
     handleBlogCreate,
+    blogFormVisible,
+    setBlogFormVisible,
   }
 
   return (
