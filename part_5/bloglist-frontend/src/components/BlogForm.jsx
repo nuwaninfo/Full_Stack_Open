@@ -1,18 +1,27 @@
+import { useState } from 'react'
+
 const BlogForm = ({ blogFormProps }) => {
-  const {
-    title,
-    author,
-    url,
-    setTitle,
-    setAuthor,
-    setUrl,
-    handleBlogCreate,
-    blogFormVisible,
-    setBlogFormVisible,
-  } = blogFormProps
+  const { blogFormVisible, setBlogFormVisible, addBlog } = blogFormProps
+
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
   const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
+
+  const handleBlogCreate = () => {
+    event.preventDefault()
+    const newBlog = {
+      title,
+      author,
+      url,
+    }
+    addBlog(newBlog)
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
 
   return (
     <>

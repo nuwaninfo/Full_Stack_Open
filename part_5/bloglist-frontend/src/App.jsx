@@ -17,9 +17,7 @@ const App = () => {
     message: null,
     type: null,
   })
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+
   const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
@@ -69,13 +67,7 @@ const App = () => {
     setUser('')
   }
 
-  const handleBlogCreate = async () => {
-    event.preventDefault()
-    const newBlog = {
-      title,
-      author,
-      url,
-    }
+  const addBlog = async (newBlog) => {
     try {
       const response = await blogService.create(newBlog)
 
@@ -89,24 +81,15 @@ const App = () => {
           type: null,
         })
       }, 5000)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
     } catch (error) {
       console.error('Error creating blog:', error)
     }
   }
 
   const blogFormProps = {
-    title,
-    author,
-    url,
-    setTitle,
-    setAuthor,
-    setUrl,
-    handleBlogCreate,
     blogFormVisible,
     setBlogFormVisible,
+    addBlog,
   }
 
   return (
