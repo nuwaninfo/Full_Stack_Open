@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+
 import LoginForm from './components/LoginForm'
 import LogOut from './components/LogOut'
 import BlogForm from './components/BlogForm'
+import BlogList from './components/BlogList'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,7 +13,10 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState({
+    message: null,
+    type: null,
+  })
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -37,15 +42,22 @@ const App = () => {
         username,
         password,
       })
+      setErrorMessage({
+        message: null,
+        type: null,
+      })
       blogService.setToken(user)
       setUser(user)
       window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setErrorMessage({ message: 'Wrong credentials', type: 'error' })
       setTimeout(() => {
-        setErrorMessage(null)
+        setErrorMessage({
+          message: null,
+          type: null,
+        })
       }, 5000)
     }
   }
@@ -64,7 +76,15 @@ const App = () => {
       url,
     }
     try {
-      const response = blogService.create(newBlog)
+      const response = await blogService.create(newBlog)
+
+      setErrorMessage({
+        message: `a new blog ${response.title} added`,
+        type: 'success',
+      })
+      setTitle('')
+      setAuthor('')
+      setUrl('')
     } catch (error) {
       console.error('Error creating blog:', error)
     }
@@ -80,19 +100,6 @@ const App = () => {
     handleBlogCreate,
   }
 
-  const blogList = () => {
-    return (
-      <>
-        <br />
-        <div>
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
-        </div>
-      </>
-    )
-  }
-
   return (
     <div>
       {user === null && (
@@ -102,14 +109,16 @@ const App = () => {
           password={password}
           setUsername={setUsername}
           setPassword={setPassword}
+          messageObj={errorMessage}
         />
       )}
       {user !== null && (
         <>
           <h2>blogs</h2>
+          <Notification messageObj={errorMessage} />
           <LogOut name={user.name} handleLogout={handleLogout} />
           <BlogForm blogFormProps={blogFormProps} />
-          {blogList()}
+          <BlogList blogs={blogs} />
         </>
       )}
     </div>

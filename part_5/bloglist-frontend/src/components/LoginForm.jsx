@@ -1,9 +1,19 @@
+import Notification from './Notification'
+
 const LoginForm = (props) => {
-  const { username, password, handleLogin, setUsername, setPassword } = props
+  const {
+    username,
+    password,
+    handleLogin,
+    setUsername,
+    setPassword,
+    messageObj,
+  } = props
 
   return (
     <>
       <h2>log in to application</h2>
+      <Notification messageObj={messageObj} />
       <form onSubmit={handleLogin}>
         <div>
           username
