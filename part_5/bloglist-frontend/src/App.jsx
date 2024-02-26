@@ -70,7 +70,14 @@ const App = () => {
   const addBlog = async (newBlog) => {
     try {
       const response = await blogService.create(newBlog)
-
+      const updatedBlog = [...blogs]
+      updatedBlog.push({
+        id: response.id,
+        title: response.title,
+        author: response.author,
+        url: response.url,
+      })
+      setBlogs(updatedBlog)
       setErrorMessage({
         message: `a new blog ${response.title} added`,
         type: 'success',
@@ -90,6 +97,7 @@ const App = () => {
     blogFormVisible,
     setBlogFormVisible,
     addBlog,
+    user,
   }
 
   return (
@@ -110,7 +118,7 @@ const App = () => {
           <Notification messageObj={errorMessage} />
           <LogOut name={user.name} handleLogout={handleLogout} />
           <BlogForm blogFormProps={blogFormProps} />
-          <BlogList blogs={blogs} />
+          <BlogList blogs={blogs} user={user} />
         </>
       )}
     </div>
