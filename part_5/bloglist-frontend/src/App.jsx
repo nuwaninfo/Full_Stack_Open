@@ -102,7 +102,7 @@ const App = () => {
 
     try {
       const response = await blogService.update(newBlog.id, newBlog)
-      const updatedBlog = [...blogs]
+
       filteredBlogs.push({
         id: response.id,
         title: response.title,
