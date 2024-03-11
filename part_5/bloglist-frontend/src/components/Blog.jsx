@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog, user, addLikes }) => {
   const [detailsVisible, setdetailsVisible] = useState(false)
 
   const hideWhenVisible = { display: detailsVisible ? 'none' : '' }
@@ -12,6 +12,19 @@ const Blog = ({ blog, user }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
+  }
+
+  const handleLikes = () => {
+    const UpdatedLikes = blog.likes + 1
+
+    const newBlog = {
+      id: blog.id,
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: UpdatedLikes,
+    }
+    addLikes(newBlog)
   }
 
   return (
@@ -39,8 +52,10 @@ const Blog = ({ blog, user }) => {
       <div style={showWhenVisible}>
         <div>{blog.url}</div>
         <div>
-          likes {blog.likes}
-          <button type='button'>like</button>
+          likes {blog.likes} &nbsp;
+          <button type='button' onClick={handleLikes}>
+            like
+          </button>
         </div>
         <div>{user.name}</div>
       </div>

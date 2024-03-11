@@ -93,6 +93,30 @@ const App = () => {
     }
   }
 
+  const addLikes = async (newBlog) => {
+    const filteredBlogs = blogs.filter((blog) => {
+      if (blog.id !== newBlog.id) {
+        return blog
+      }
+    })
+
+    try {
+      const response = await blogService.update(newBlog.id, newBlog)
+      const updatedBlog = [...blogs]
+      filteredBlogs.push({
+        id: response.id,
+        title: response.title,
+        author: response.author,
+        url: response.url,
+        likes: response.likes,
+      })
+
+      setBlogs(filteredBlogs)
+    } catch (error) {
+      console.log('Error adding likes', error)
+    }
+  }
+
   const blogFormProps = {
     blogFormVisible,
     setBlogFormVisible,
@@ -118,7 +142,7 @@ const App = () => {
           <Notification messageObj={errorMessage} />
           <LogOut name={user.name} handleLogout={handleLogout} />
           <BlogForm blogFormProps={blogFormProps} />
-          <BlogList blogs={blogs} user={user} />
+          <BlogList blogs={blogs} user={user} addLikes={addLikes} />
         </>
       )}
     </div>
